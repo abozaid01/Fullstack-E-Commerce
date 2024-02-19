@@ -1,0 +1,19 @@
+version: '3'
+services:
+  express-app:
+    image: 'ecommerce-dev-img'
+    build:
+      context: .
+      target: builder
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - FORCE_COLOR=true
+    env_file:
+      - ./.env
+    command: ['npm', 'run', 'dev']

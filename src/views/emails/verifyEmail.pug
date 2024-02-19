@@ -1,0 +1,22 @@
+extends ../_baseEmail
+
+block body
+  tr
+    td.wrapper
+      p Dear #{firstname},
+      p Thank you for registering with us! To ensure the security of your account and complete the registration process, we kindly ask you to verify your email address.
+      p Please click on the following link or copy and paste it into your browser's address bar to verify your email:
+      table.btn.btn-primary(role="presentation", border="0", cellpadding="0", cellspacing="0")
+        tbody
+          tr
+            td(align="left")
+              table(role="presentation", border="0", cellpadding="0", cellspacing="0")
+                tbody
+                  tr
+                    td
+                      a(href=`${callToActionURL}`, target="_blank") Verify your Email
+      p Once you've verified your email address, you'll gain full access to all the features and benefits of our platform.
+      p If you have any questions or need assistance, please don't hesitate to contact our customer support team.
+      p Thank you for choosing us!
+      p Best regards,
+      p [Your Company Name] Team
