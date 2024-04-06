@@ -10,6 +10,7 @@ services:
     volumes:
       - ./src:/app/src:ro
       - ./tests:/app/tests:ro
+      - ./uploads:/app/uploads
     environment:
       - NODE_ENV=development
       - PORT=3000

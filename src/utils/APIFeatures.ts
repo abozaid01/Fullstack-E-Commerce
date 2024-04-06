@@ -43,7 +43,7 @@ class APIFeatures<T> {
     if (this.reqQuery.fields) {
       const fields: string = (this.reqQuery.fields as string).split(',').join(' ');
       this.query.select(fields);
-    } else this.query.select('-__v');
+    } else this.query.select('-__v -createdAt -updatedAt');
 
     return this;
   }

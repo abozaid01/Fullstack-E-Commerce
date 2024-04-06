@@ -53,6 +53,10 @@ const handleTokenExpiredError = () => {
   return new AppError('Invalid token, please login again', 401);
 };
 
+const handleMulterError = (err: AppError) => {
+  return new AppError(err.message, 400);
+};
+
 const handleErrors = function (err: AppError, req: Request, res: Response, next: NextFunction) {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
@@ -79,6 +83,9 @@ const handleErrors = function (err: AppError, req: Request, res: Response, next:
 
     // Handle Expired JWT Tokens
     if (err.name === 'TokenExpiredError') err = handleTokenExpiredError();
+
+    // Handle Multer File Uploads Errors
+    if (err.name === 'MulterError') err = handleMulterError(err);
 
     return sendErrorProd(err, req, res);
   }

@@ -1,8 +1,17 @@
 import { Model } from 'mongoose';
 import { catchAsync } from './catchAsync';
-import { Request, Response, NextFunction } from 'express';
+import { Request as ExpressRequest, Response, NextFunction } from 'express';
 import AppError from './AppError';
 import APIFeatures from './APIFeatures';
+
+interface Request extends ExpressRequest {
+  filterObj?: { category_id?: string };
+}
+
+interface Options {
+  populate?: { path: string; select?: string };
+  filters?: { reqBodyField: string; reqParamField: string }[];
+}
 
 class Factory {
   static createOne<T>(Model: Model<T>) {
@@ -19,7 +28,7 @@ class Factory {
 
   static getOne<T>(Model: Model<T>, populateOptions?: { path: string; select?: string }) {
     return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-      const query = Model.findById(req.params.id).select('-__v');
+      const query = Model.findById(req.params.id).select('-__v -createdAt -updatedAt');
       if (populateOptions) {
         query.populate(populateOptions);
       }
@@ -38,13 +47,29 @@ class Factory {
     });
   }
 
-  static getAll<T>(Model: Model<T>) {
+  static getAll<T>(Model: Model<T>, options?: Options) {
     return catchAsync(async (req: Request, res: Response) => {
+      // To allow nested GET All Children on Parent
+      let filter = {};
+      if (options?.filters) {
+        options.filters.forEach((f) => {
+          // ONLY one filter would be attached to request
+          if (req.params[f.reqParamField]) {
+            filter = { [f.reqBodyField]: req.params[f.reqParamField] };
+          }
+        });
+      }
+
       // Base QUERY
-      const query = Model.find({});
+      const query = Model.find(filter);
 
       // Add more Features for Query
       const features = new APIFeatures(query, req.query).filter().sort().project().paginate();
+
+      // Populate if any
+      if (options?.populate) {
+        query.populate(options.populate);
+      }
 
       // EXECUTE QUERY
       const docs = await features.queryExec;

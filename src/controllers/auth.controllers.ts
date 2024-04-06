@@ -154,7 +154,6 @@ export const verifyEmail = catchAsync(async (req: Request, res, next) => {
     { runValidators: true, new: true },
   );
 
-  // 5) Update changedPasswordAt property for the user
   res.json({
     status: 'success',
     message: 'you are now verified',
