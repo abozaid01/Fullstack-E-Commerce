@@ -1,14 +1,9 @@
-import { Request as ExpressRequest, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { catchAsync } from '../utils/catchAsync';
 import { verifyAsync } from '../utils/verifyJwtAsync';
 import AppError from '../utils/AppError';
 import User from '../models/user.models';
-import IUser from '../interfaces/user.interface';
 import Logger from '../utils/Logger';
-
-interface Request extends ExpressRequest {
-  user?: IUser;
-}
 
 export const authenticate = catchAsync(async (req: Request, res, next) => {
   let accessToken: string = '';

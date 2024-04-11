@@ -1,11 +1,5 @@
 import express from 'express';
-import prodductRouter from './routes/product.routes';
-import userRouter from './routes/user.routes';
-import authRouter from './routes/auth.routes';
-import brandRouter from './routes/brand.routes';
-import categoryRouter from './routes/category.routes';
-import subCategoryRouter from './routes/subCategory.routes';
-import reviewRouter from './routes/review.routes';
+import appRoutes from './routes';
 import AppError from './utils/AppError';
 import handleErrors from './middlewares/error.middleware';
 import httpLoggerMiddleware from './middlewares/logger.middleware';
@@ -61,13 +55,7 @@ app.use(
 app.use(httpLoggerMiddleware);
 
 // Routes
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/products', prodductRouter);
-app.use('/api/v1/brands', brandRouter);
-app.use('/api/v1/categories', categoryRouter);
-app.use('/api/v1/subcategories', subCategoryRouter);
-app.use('/api/v1/reviews', reviewRouter);
+app.use('/', appRoutes);
 
 //404 Not-Found Routes
 app.all('*', (req, res, next) => {

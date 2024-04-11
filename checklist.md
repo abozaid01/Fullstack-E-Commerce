@@ -11,6 +11,7 @@
   - ✅ forget password
   - ✅ reset email
   - ✅ verify email
+  - [] denormalize addresses
   - [] JWT refresh token rotaion
   - [] OAuth
 
@@ -39,17 +40,25 @@
   ✅ reviews in Product (sync ratingAvg & ratingQt)
   [] reviews in User
 
-❌ 6. **Cart and Wishlist**:
+✅ 6. **Cart and Wishlist**:
 
 - These models are related to users and products, so they can be implemented next.
 
-❌ 7. **Order**:
+  ✅ denormalize whilist in user collection
+  ✅ cart ownership
+  [] sync product Qty avalabilty
+  [] Anonymous user cart
+
+✅ 7. **Coupon**:
+
+- Coupons may be applied on a user's shopping cart, so it makes sense to implement this model after the cart model.
+
+✅ check expire Date in future
+[] add functionality to expire by time and calucalte Date accordingly
+
+❌ 8. **Order**:
 
 - Orders are usually dependent on users and products, so implementing this model after the user, product, and cart/wishlist models is logical.
-
-❌ 8. **Coupon**:
-
-- Coupons may be associated with orders, so it makes sense to implement this model after the order model.
 
 #### It provides a structured approach to implementing the models in a way that ensures smooth functionality and efficient development.
 

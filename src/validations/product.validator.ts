@@ -14,6 +14,14 @@ async function checkBrandExist(BrandId: string) {
   });
 }
 
+const checkTitleExist = async (title: string) => {
+  return Product.findOne({ title }).then((product) => {
+    if (product) {
+      return Promise.reject(new Error(`product ${title} alerady exist`));
+    }
+  });
+};
+
 export const getAllProductsValidator = [
   param('brandId')
     .optional()
@@ -32,13 +40,7 @@ export const createProductValidator = [
     .withMessage('Too short, must be at least 3 chars')
     .isLength({ max: 32 })
     .withMessage('Too long product name, must be at most 23 chars')
-    .custom((title) =>
-      Product.findOne({ title }).then((product) => {
-        if (product) {
-          return Promise.reject(new Error(`product ${title} alerady exist`));
-        }
-      }),
-    ),
+    .custom(checkTitleExist),
 
   body('description')
     .notEmpty()
@@ -160,13 +162,7 @@ export const updateProductValidator = [
     .withMessage('Too short, must be at least 3 chars')
     .isLength({ max: 32 })
     .withMessage('Too long brand name, must be at most 23 chars')
-    .custom((title) =>
-      Product.findOne({ title }).then((product) => {
-        if (product) {
-          return Promise.reject(new Error(`product ${title} alerady exist`));
-        }
-      }),
-    ),
+    .custom(checkTitleExist),
 
   body('description')
     .optional()

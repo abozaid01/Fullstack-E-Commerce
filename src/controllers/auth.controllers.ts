@@ -1,17 +1,12 @@
-import { Request as ExpressRequest, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { catchAsync } from '../utils/catchAsync';
 import { verifyAsync } from '../utils/verifyJwtAsync';
 import { createAndSendToken } from '../utils/createAndSignToken';
 import AppError from '../utils/AppError';
 import Logger from '../utils/Logger';
 import User from '../models/user.models';
-import IUser from '../interfaces/user.interface';
 import Email from '../utils/Email';
 import crypto from 'crypto';
-
-interface Request extends ExpressRequest {
-  user?: IUser;
-}
 
 // @desc    Register a new user
 // @route   POST /api/v1/auth/signup

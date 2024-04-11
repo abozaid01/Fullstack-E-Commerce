@@ -1,14 +1,9 @@
-import { Request as ExpressRequest, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { catchAsync } from '../utils/catchAsync';
 import { createAndSendToken } from '../utils/createAndSignToken';
 import AppError from '../utils/AppError';
 import User from '../models/user.models';
-import IUser from '../interfaces/user.interface';
 import Factory from '../utils/FactoryHandler';
-
-interface Request extends ExpressRequest {
-  user?: IUser;
-}
 
 // @desc    Get list of users
 // @route   GET /api/v1/users

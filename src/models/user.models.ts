@@ -69,6 +69,21 @@ const userSchema = new Schema<IUser>({
     default: true,
     select: false,
   },
+  wishlist: [
+    {
+      type: Schema.ObjectId,
+      ref: 'Product',
+    },
+  ],
+  addresses: [
+    {
+      alias: String,
+      details: String,
+      phone: String,
+      city: String,
+      postalCode: String,
+    },
+  ],
 });
 
 //================ Document Middlewares =======================
@@ -153,6 +168,6 @@ userSchema.methods.createPasswordResetToken = async function () {
   return resetToken;
 };
 
-const User = model('User', userSchema);
+const User = model<IUser>('User', userSchema);
 
 export default User;

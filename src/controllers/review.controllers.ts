@@ -1,11 +1,6 @@
-import { Request as ExpressRequest, Response, NextFunction } from 'express';
-import IUser from '../interfaces/user.interface';
+import { Request, Response, NextFunction } from 'express';
 import Factory from '../utils/FactoryHandler';
 import Review from '../models/review.model';
-
-interface Request extends ExpressRequest {
-  user?: IUser;
-}
 
 // @desc    Set User ID for Authenticated users
 // @route   POST /api/v1/reviews
