@@ -74,10 +74,14 @@ class Factory {
       // EXECUTE QUERY
       const docs = await features.queryExec;
 
+      // Execute count query
+      const totalCount = await Model.estimatedDocumentCount(); // O(1) but not always accurate
+
       // SEND RESPONSE
       res.json({
         status: 'success',
         results: docs.length,
+        total: totalCount,
         data: {
           [Model.collection.collectionName]: docs,
         },

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import '../../app.css';
 	import Footer from '$lib/components/Footer.svelte';
 	import Header from '$lib/components/header/Header.svelte';
@@ -18,5 +18,9 @@
 </svelte:head>
 
 <Header />
-<slot />
+
+<main class="container">
+	<slot />
+</main>
+
 <Footer />

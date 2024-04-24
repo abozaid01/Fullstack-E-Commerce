@@ -22,6 +22,7 @@ export async function fetchWithAuth(URL: string, options: RequestInit = {}) {
 
 		// 3.1) return the respone if it's okay
 		if (response.ok) {
+			if (response.status === 204) return;
 			return response.json();
 		}
 		// 3.2) refresh accessToken if the accessToken expired and loop again

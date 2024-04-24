@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { Button, Modal, Label, Input, Checkbox } from 'flowbite-svelte';
+	import { Button, Modal, Label, Input } from 'flowbite-svelte';
 	import { login } from '$lib/services/auth.service';
 	import ValidateInput from '$lib/components/ValidateInput.svelte';
 	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
-	import SuccessAlert from '$lib/components/SuccessAlert.svelte';
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -13,7 +12,6 @@
 	let email = 'test@gmail.com';
 	let password = 'test123';
 
-	let successMsg = '';
 	let errStr = '';
 	let errObj: any = {};
 
@@ -30,7 +28,7 @@
 		if (errObj.email || errObj.password) return;
 
 		try {
-			successMsg = await login(email, password);
+			await login(email, password);
 			loginModal = false;
 		} catch (error: any) {
 			if (error.data?.validation_errors) errObj = error.data.validation_errors;
@@ -43,10 +41,6 @@
 		signupModal = true;
 	};
 </script>
-
-{#if successMsg}
-	<SuccessAlert {successMsg} />
-{/if}
 
 {#if errStr}
 	<ErrorAlert {errStr} />

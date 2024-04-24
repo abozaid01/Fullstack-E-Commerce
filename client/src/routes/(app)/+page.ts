@@ -1,11 +1,12 @@
+import { PUBLIC_BACKEND_URL } from '$env/static/public';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
 	try {
 		// Fetch data for brands and categories in parallel
 		const [brandsResponse, categoriesResponse] = await Promise.all([
-			fetch(`http://localhost:3000/api/v1/brands`),
-			fetch(`http://localhost:3000/api/v1/categories`)
+			fetch(`${PUBLIC_BACKEND_URL}/brands`),
+			fetch(`${PUBLIC_BACKEND_URL}/categories`)
 		]);
 
 		// Parse response data

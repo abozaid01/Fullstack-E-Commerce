@@ -14,13 +14,16 @@
 	import { currentToken, currentUser } from '$lib/stores/user.store';
 	import { Dropdown, DropdownItem, Avatar } from 'flowbite-svelte';
 	import { logout } from '$lib/services/auth.service';
+	import CartDrawer from '../Cart/CartDrawer.svelte';
 
 	let loginModal = false;
 	let signupModal = false;
+	let hideCartDrawer = true;
 </script>
 
 <LoginModal bind:loginModal bind:signupModal />
 <SignupModal bind:signupModal bind:loginModal />
+<CartDrawer bind:hideCartDrawer />
 
 <header class="h-64 bg-[#1ba1e2] px-12 py-10">
 	<div
@@ -111,11 +114,12 @@
 			</div>
 			<!-- Cart -->
 			<div class="relative flex gap-1">
-				<a
-					href="#"
+				<button
+					on:click={() => (hideCartDrawer = false)}
 					class="text-sm font-semibold uppercase text-gray-400 transition-colors duration-300 ease-in hover:text-orange-400"
-					>CART</a
 				>
+					CART
+				</button>
 				<button>
 					<Icon
 						src={FaSolidShoppingCart}
@@ -127,7 +131,12 @@
 		</div>
 
 		<!-- LOGO -->
-		<div class="logo"></div>
+		<img
+			src="https://previews.123rf.com/images/vectorgalaxy/vectorgalaxy1805/vectorgalaxy180500960/101157490-logo-text-teddy-bear-isolated-on-white-background-for-your-web-and-mobile-app-design-colorful-vector.jpg"
+			alt="logo"
+			class="logo"
+		/>
+		<!-- <div class="logo"></div> -->
 	</div>
 
 	<!-- NAV LINKS -->
@@ -137,10 +146,10 @@
 				<a href="/">Home</a>
 			</li>
 			<li class="transition-colors duration-300 ease-in hover:text-orange-400">
-				<a href="">About Us</a>
+				<a href="">online shop</a>
 			</li>
 			<li class="transition-colors duration-300 ease-in hover:text-orange-400">
-				<a href="">Services</a>
+				<a href="">shop Locater</a>
 			</li>
 			<li class="transition-colors duration-300 ease-in hover:text-orange-400">
 				<a href="">Testimonials</a>
@@ -148,13 +157,15 @@
 		</ul>
 		<ul class="flex gap-10 text-sm font-semibold uppercase text-white">
 			<li class="transition-colors duration-300 ease-in hover:text-orange-400">
-				<a href="">shop Locater</a>
-			</li>
-			<li class="transition-colors duration-300 ease-in hover:text-orange-400">
-				<a href="">online shop</a>
+				<a href=""></a>
+				<a href="">Services</a>
 			</li>
 			<li class="transition-colors duration-300 ease-in hover:text-orange-400">
 				<a href="">Blog</a>
+			</li>
+			<li class="transition-colors duration-300 ease-in hover:text-orange-400">
+				<a href="">About Us</a>
+				<a href=""></a>
 			</li>
 			<li class="transition-colors duration-300 ease-in hover:text-orange-400">
 				<a href="">Contact Us</a>
@@ -189,7 +200,7 @@
 	}
 
 	.absolute-count {
-		@apply absolute -right-2 -top-4 rounded-full bg-orange-400 px-1 py-0.5 text-xs leading-none text-slate-100;
+		@apply absolute -right-2 -top-3 rounded-full bg-orange-400 px-1 py-0.5 text-xs leading-none text-slate-100;
 	}
 
 	.zig-zag-bottom {

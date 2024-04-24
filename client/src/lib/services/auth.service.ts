@@ -58,7 +58,6 @@ export const login = async function (email: string, password: string) {
 	const response = await fetch(`${PUBLIC_BACKEND_URL}/auth/login`, {
 		method: 'POST',
 		credentials: 'include',
-		mode: 'cors',
 		headers: {
 			'Content-Type': 'application/json'
 		},
@@ -76,19 +75,12 @@ export const login = async function (email: string, password: string) {
 		accessToken: data.accessToken
 	});
 
-	// Redirect the user to his appropriate route based on his role
-	// switch (data.data.user.role) {
-	// 	case 'admin':
-	// 		goto('/admin/dashboard');
-	// 		break;
-
-	// 	default:
-	// 		goto('/');
-	// 		break;
-	// }
-
-	// return successMsg to be displayed;
-	return 'Logged in Successfully!';
+	// successMsg to be displayed;
+	goto('/');
+	new SuccessAlert({
+		props: { successMsg: 'Logged in Successfully!' },
+		target: document.body
+	});
 };
 
 // Logout function

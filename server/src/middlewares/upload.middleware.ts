@@ -82,11 +82,11 @@ export const resizeSingleImg = catchAsync(async (req: Request, res: Response, ne
   // 2) Create the Directory if not exist
   await createDir(`${__dirname}/../../uploads/${folderName}`);
 
-  // 3) Create the Img name
+  // 3) Create Img name
   req.file.filename = `${folderName}_${Date.now().toString(36) + Math.random().toString(36).substring(2)}_${new Date().toISOString().slice(2, 19).replace('T', '_')}.jpeg`; // probability of collision (i.e., generating the same ID) depends on the method and the context in which it's used
 
-  // 4) remove the old img when updating
-  if (req.method === 'PATCH') {
+  // Remove the old img when updating
+  if (req.method === 'PATCH' && req.body[req.file.fieldname] !== 'undefined') {
     // Check if the old image's filename is provided in the request body
     if (!req.body[req.file.fieldname]) {
       return next(new AppError(`Please provide the filename of the old image in the request body to remove it first.`, 400));

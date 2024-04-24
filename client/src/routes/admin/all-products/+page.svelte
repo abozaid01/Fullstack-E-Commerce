@@ -1,20 +1,16 @@
 <script lang="ts">
 	import {
-		Card,
 		Button,
-		Badge,
 		TableHead,
 		TableHeadCell,
 		TableBody,
-		TableBodyRow,
-		TableBodyCell,
-		Avatar,
-		Rating,
 		TableSearch,
 		Dropdown,
 		Checkbox,
 		ButtonGroup,
-		DropdownDivider
+		DropdownDivider,
+		Breadcrumb,
+		BreadcrumbItem
 	} from 'flowbite-svelte';
 	import {
 		PlusOutline,
@@ -22,11 +18,12 @@
 		ChevronRightOutline,
 		ChevronLeftOutline
 	} from 'flowbite-svelte-icons';
-	import ProductActionIcons from '$lib/components/AdminComponents/ProductActionIcons.svelte';
 	import { GridSolid, ListOutline } from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 	import { Section } from 'flowbite-svelte-blocks';
 	import AddProductModal from './AddProductModal.svelte';
+	import ProductGridItem from './ProductGridIemt.svelte';
+	import ProductListItem from './ProductListItem.svelte';
 
 	const divClass =
 		'bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-x-scroll scrollbar-none';
@@ -36,6 +33,7 @@
 	const classInput =
 		'text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2  pl-10';
 
+	// Comes from API
 	const paginationData = [
 		{
 			id: 1,
@@ -413,7 +411,7 @@
 	let view = 'list';
 	let searchTerm = '';
 	let currentPosition = 0;
-	const itemsPerPage = 5;
+	const itemsPerPage = 4;
 	const showPage = 5;
 	let totalPages = 0;
 	let pagesToShow: number[] = [];
@@ -421,22 +419,17 @@
 	let startPage: number;
 	let endPage: number;
 
-	const updateDataAndPagination = () => {
-		paginationData.slice(currentPosition, currentPosition + itemsPerPage);
-		renderPagination();
-	};
-
 	const loadNextPage = () => {
 		if (currentPosition + itemsPerPage < paginationData.length) {
 			currentPosition += itemsPerPage;
-			updateDataAndPagination();
+			renderPagination();
 		}
 	};
 
 	const loadPreviousPage = () => {
 		if (currentPosition - itemsPerPage >= 0) {
 			currentPosition -= itemsPerPage;
-			updateDataAndPagination();
+			renderPagination();
 		}
 	};
 
@@ -456,7 +449,7 @@
 
 	const goToPage = (pageNumber: number) => {
 		currentPosition = (pageNumber - 1) * itemsPerPage;
-		updateDataAndPagination();
+		renderPagination();
 	};
 
 	$: startRange = currentPosition + 1;
@@ -486,6 +479,11 @@
 		name="advancedTable"
 		classSection="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5"
 	>
+		<Breadcrumb aria-label="Default breadcrumb example" navClass="mb-4">
+			<BreadcrumbItem href="/admin" home>Admin Home</BreadcrumbItem>
+			<BreadcrumbItem>Products</BreadcrumbItem>
+		</Breadcrumb>
+
 		<TableSearch
 			placeholder="Search"
 			hoverable={true}
@@ -544,7 +542,7 @@
 			</div>
 
 			{#if view === 'list'}
-				<!-- TABLE HEADER -->
+				<!-- LIST TABLE HEADER -->
 				<TableHead>
 					<TableHeadCell padding="px-4 py-3" scope="col">NAME</TableHeadCell>
 					<TableHeadCell padding="px-4 py-3" scope="col">STOCK</TableHeadCell>
@@ -554,124 +552,34 @@
 					<TableHeadCell padding="px-4 py-3" scope="col">Action</TableHeadCell>
 				</TableHead>
 
-				<!-- TABLE BODY -->
+				<!-- LIST TABLE BODY -->
 				<TableBody tableBodyClass="divide-y">
-					<!-- SEARCHED TABLE BODY -->
 					{#if searchTerm !== ''}
+						<!-- SEARCHED TABLE LIST BODY -->
 						{#each filteredItems as item (item.id)}
-							<TableBodyRow>
-								<TableBodyCell>
-									<div class="flex items-center text-sm">
-										<Avatar class="mr-4" src={item.photo} alt="Product image" />
-										<div>
-											<p class="font-semibold">{item.name}</p>
-										</div>
-									</div>
-								</TableBodyCell>
-								<TableBodyCell tdClass="px-4 py-3"
-									><Badge rounded color={item.qty > 0 ? 'green' : 'red'}>
-										{item.qty > 0 ? 'In Stock' : 'Out of Stock'}
-									</Badge></TableBodyCell
-								>
-								<TableBodyCell tdClass="px-4 py-3"
-									><Rating total={5} rating={item.rating}>
-										<p
-											slot="text"
-											class="ms-2 text-sm font-medium text-gray-500 dark:text-gray-400"
-										>
-											({item.reviews.length})
-										</p>
-									</Rating></TableBodyCell
-								>
-								<TableBodyCell tdClass="px-4 py-3">{item.qty}</TableBodyCell>
-
-								<TableBodyCell tdClass="px-4 py-3">{item.price}</TableBodyCell>
-								<TableBodyCell>
-									<div class="flex gap-2">
-										<ProductActionIcons />
-									</div>
-								</TableBodyCell>
-							</TableBodyRow>
+							<ProductListItem {item} />
 						{/each}
-
-						<!-- FULL TABLE BODY -->
 					{:else}
+						<!-- FULL TABLE List BODY -->
 						{#each currentPageItems as item (item.id)}
-							<TableBodyRow>
-								<TableBodyCell>
-									<div class="flex items-center text-sm">
-										<Avatar
-											class="mr-1 lg:mr-4"
-											src={item.photo}
-											alt="Product image"
-										/>
-										<div>
-											<p class="text-xs lg:font-semibold">{item.name}</p>
-										</div>
-									</div>
-								</TableBodyCell>
-								<TableBodyCell tdClass="px-4 py-3"
-									><Badge rounded color={item.qty > 0 ? 'green' : 'red'}>
-										{item.qty > 0 ? 'In Stock' : 'Out of Stock'}
-									</Badge></TableBodyCell
-								>
-								<TableBodyCell tdClass="px-4 py-3"
-									><Rating total={5} rating={item.rating}>
-										<p
-											slot="text"
-											class="ms-2 text-sm font-medium text-gray-500 dark:text-gray-400"
-										>
-											({item.reviews.length})
-										</p>
-									</Rating></TableBodyCell
-								>
-								<TableBodyCell tdClass="px-4 py-3">{item.qty}</TableBodyCell>
-								<TableBodyCell tdClass="px-4 py-3">{item.price}</TableBodyCell>
-								<TableBodyCell>
-									<div class="flex gap-2">
-										<ProductActionIcons />
-									</div>
-								</TableBodyCell>
-							</TableBodyRow>
+							<ProductListItem {item} />
 						{/each}
 					{/if}
 				</TableBody>
-
-				<!-- GRID VIEW TODO: sync with pagination-->
 			{:else}
+				<!-- GRID VIEW -->
 				<div class="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-					{#each paginationData as product (product.id)}
-						<Card img={product.photo}>
-							<div class="mb-2 flex items-center justify-between">
-								<p
-									class="truncate text-base font-semibold text-gray-600 dark:text-gray-300"
-								>
-									{product.name}
-								</p>
-								<Badge
-									rounded
-									color={product.qty > 0 ? 'green' : 'red'}
-									class="whitespace-nowrap"
-								>
-									<p class="break-normal">
-										{product.qty > 0 ? `In Stock` : 'Out of Stock'}
-									</p>
-								</Badge>
-							</div>
-
-							<p class="text-primary-500 mb-3 font-semibold">
-								{product.price}
-							</p>
-
-							<p class="mb-8 text-sm text-gray-600 dark:text-gray-400">
-								{product.shortDescription}
-							</p>
-
-							<div class="flex justify-end gap-2">
-								<ProductActionIcons />
-							</div>
-						</Card>
-					{/each}
+					{#if searchTerm !== ''}
+						<!-- SEARCHED GRID ITEMS -->
+						{#each filteredItems as item (item.id)}
+							<ProductGridItem {item} />
+						{/each}
+					{:else}
+						<!-- FULL GRID ITEMS -->
+						{#each currentPageItems as item (item.id)}
+							<ProductGridItem {item} />
+						{/each}
+					{/if}
 				</div>
 			{/if}
 
@@ -691,15 +599,27 @@
 						>{totalItems}</span
 					>
 				</span>
-				<ButtonGroup>
-					<Button on:click={loadPreviousPage} disabled={currentPosition === 0}
-						><ChevronLeftOutline size="xs" class="m-1.5" /></Button
+				<ButtonGroup divClass="flex gap-1">
+					<Button
+						on:click={loadPreviousPage}
+						disabled={currentPosition === 0}
+						class="border-none bg-white p-2 dark:bg-gray-800"
+						><ChevronLeftOutline size="md" /></Button
 					>
 					{#each pagesToShow as pageNumber}
-						<Button on:click={() => goToPage(pageNumber)}>{pageNumber}</Button>
+						<Button
+							on:click={() => goToPage(pageNumber)}
+							class={`rounded-xl ${
+								pageNumber === currentPosition / itemsPerPage + 1 &&
+								'bg-primary-500 dark:bg-primary-600 hover:bg-primary-400 hover:dark:bg-primary-500  text-white transition-colors duration-200 ease-in hover:text-white'
+							}`}>{pageNumber}</Button
+						>
 					{/each}
-					<Button on:click={loadNextPage} disabled={totalPages === endPage}
-						><ChevronRightOutline size="xs" class="m-1.5" /></Button
+					<Button
+						on:click={loadNextPage}
+						disabled={currentPosition / itemsPerPage + 1 === pagesToShow.at(-1)}
+						class="border-none bg-white p-2 dark:bg-gray-800"
+						><ChevronRightOutline size="md" /></Button
 					>
 				</ButtonGroup>
 			</div>

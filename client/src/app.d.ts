@@ -20,6 +20,23 @@ declare global {
 		// addresses: []
 	}
 
+	interface IProduct {
+		_id: string;
+		title: string;
+		description: string;
+		quantity: number;
+		price: number;
+		priceAfterDiscount: number;
+		colors: string[];
+		imageCover: string;
+		images: string[];
+		category_id: string;
+		subcategories_ids: string[];
+		ratingsQuantity: number;
+		ratingsAverage: number;
+		slug: string;
+	}
+
 	interface IBrand {
 		_id: string;
 		name: string;
@@ -41,8 +58,6 @@ declare global {
 		description?: string;
 		imageCover: string;
 		subcategories: ISubCategory[];
-
-		isExpanded: boolean;
 	}
 }
 

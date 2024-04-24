@@ -10,12 +10,12 @@ import xss from 'xss-clean';
 import hpp from 'hpp';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import path from 'path';
 
 const app = express();
 
 // serve static files
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(`${__dirname}/../public`));
+app.use(express.static(`${__dirname}/../uploads`));
 
 // set the view engine to Pug
 // app.set('view engine', 'pug');
@@ -23,6 +23,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 const allowedOrigins = ['http://localhost:5173', 'https://www.dandrepairshop.com', 'https://dandrepairshop.com'];
 const corsOptions = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   origin: (origin: any, callback: any) => {
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);

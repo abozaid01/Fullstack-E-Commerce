@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AdminInfoCard from '$lib/components/AdminComponents/AdminInfoCard.svelte';
+	import AdminInfoCard from '$lib/components/AdminInfoCard.svelte';
 	import BiSolidGroup from 'svelte-icons-pack/bi/BiSolidGroup';
 	import BiMoney from 'svelte-icons-pack/bi/BiMoney';
 	import BiSolidMessage from 'svelte-icons-pack/bi/BiSolidMessage';
@@ -17,7 +17,9 @@
 		TableHeadCell,
 		Badge,
 		Pagination,
-		type LinkType
+		type LinkType,
+		Breadcrumb,
+		BreadcrumbItem
 	} from 'flowbite-svelte';
 	import {
 		ChevronLeftOutline,
@@ -571,6 +573,15 @@
 </script>
 
 <main class="container flex flex-col items-center justify-center">
+	<!-- Breadcrumb -->
+	<Breadcrumb
+		aria-label="Default breadcrumb example"
+		navClass="self-start mt-4"
+	>
+		<BreadcrumbItem href="/admin" home>Admin Home</BreadcrumbItem>
+		<BreadcrumbItem>Dashboard</BreadcrumbItem>
+	</Breadcrumb>
+
 	<!-- Cards -->
 	<div
 		class="container mb-4 grid w-full place-items-center gap-4 md:grid-cols-2 md:px-4 2xl:grid-cols-4"

@@ -1,29 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import type { ICategory } from '../../interfaces/category.interface';
-	import type { IBrand } from '../../interfaces/brand.interface';
 	import Icon from 'svelte-icons-pack/Icon.svelte';
 	import CgSearch from 'svelte-icons-pack/cg/CgSearch';
-	import FiPlus from 'svelte-icons-pack/fi/FiPlus';
-	import FiMinus from 'svelte-icons-pack/fi/FiMinus';
-	import DoubleRangeSlider from '../DoubleRangeSlider.svelte';
+	import DoubleRangeSlider from './DoubleRangeSlider.svelte';
+	import { AccordionItem, Accordion } from 'flowbite-svelte';
+	import { MinusOutline, PlusOutline } from 'flowbite-svelte-icons';
 
 	export let categories: ICategory[] = [];
 	export let brands: IBrand[] = [];
-
-	onMount(() => {
-		categories = categories.map((category) => ({
-			...category,
-			isExpanded: false
-		}));
-	});
-
-	function toggleCategory(category: ICategory) {
-		categories = categories.map((cat: ICategory) => ({
-			...cat,
-			isExpanded: cat._id === category._id ? !cat.isExpanded : false
-		}));
-	}
 
 	let start: number;
 	let end: number;
@@ -47,39 +30,43 @@
 
 	<!-- Categories -->
 	<div class="section">
-		<div class="text">categories</div>
+		<div class="mb-4 text-lg font-bold uppercase">categories</div>
 
-		<ul class="px-3">
+		<Accordion>
 			{#each categories as category (category._id)}
-				<li class="category-item">
-					<button
-						on:click={() => toggleCategory(category)}
-						class="flex w-full justify-between"
+				<AccordionItem defaultClass="w-full text-left relative">
+					<span
+						slot="header"
+						class="absolute left-2 top-1/2 -translate-y-1/2 cursor-pointer font-semibold"
+						>{category.name}</span
 					>
-						<p>{category.name}</p>
-						<span class="flex justify-end">
-							{#if category.isExpanded}
-								<Icon src={FiMinus} className="text-orange-500 text-xl" />
-							{:else}
-								<Icon src={FiPlus} className="text-orange-500 text-xl" />
-							{/if}
-						</span>
-					</button>
-
-					{#if category.isExpanded}
-						<ul class="subcategories-list">
-							{#each category.subcategories as subcategory (subcategory._id)}
-								<li class="subcategories-item">
-									<a href={`/${category.name}/${category._id}`}
-										>{subcategory.name}</a
-									>
-								</li>
-							{/each}
-						</ul>
-					{/if}
-				</li>
+					<div
+						slot="arrowup"
+						class="absolute right-2 top-1/2 w-8 -translate-y-1/2"
+					>
+						<MinusOutline class="-me-0.5 h-6 w-6 text-orange-400" />
+					</div>
+					<span
+						slot="arrowdown"
+						class="absolute right-2 top-1/2 w-8 -translate-y-1/2"
+					>
+						<PlusOutline class="-me-0.5 h-6 w-6 text-orange-400" />
+					</span>
+					<!-- SUBCATEGORIES -->
+					<ul>
+						{#each category.subcategories as subcategory (subcategory._id)}
+							<li
+								class="py-1 font-medium text-gray-400 transition-all duration-200 ease-in hover:text-orange-400 active:text-orange-500"
+							>
+								<a href={`/${category.name}/${category._id}`}
+									>{subcategory.name}</a
+								>
+							</li>
+						{/each}
+					</ul>
+				</AccordionItem>
 			{/each}
-		</ul>
+		</Accordion>
 	</div>
 
 	<!-- BRANDS -->
@@ -88,9 +75,11 @@
 
 		<ul class="mt-4 grid grid-cols-2 gap-2 px-3 text-center text-white">
 			{#each brands as brand (brand._id)}
-				<li class="rounded-full bg-orange-400 py-3 hover:bg-orange-500">
-					<p>{brand.name}</p>
-				</li>
+				<a href={`/brands/${brand._id}`}>
+					<li class="rounded-full bg-orange-400 py-3 hover:bg-orange-500">
+						{brand.name}
+					</li>
+				</a>
 			{/each}
 		</ul>
 	</div>
@@ -150,19 +139,6 @@
 
 	.search-btn {
 		@apply absolute right-16 top-[0.66rem] rounded-full text-2xl text-orange-500;
-	}
-
-	/* CATEGORIES */
-	.category-item {
-		@apply my-3 cursor-pointer font-semibold;
-	}
-
-	.subcategories-list {
-		@apply py-2 pl-3;
-	}
-
-	.subcategories-item {
-		@apply py-1 font-medium text-gray-400 transition-all duration-200 ease-in hover:text-orange-400 active:text-orange-500;
 	}
 
 	/* BRANDS */
