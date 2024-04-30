@@ -6,17 +6,17 @@
 
 <AdminHeader />
 <div
-	class="flex w-full items-start justify-center text-lg font-medium text-gray-600 md:pt-16 xl:justify-between dark:bg-gray-900 dark:text-gray-400"
+	class="flex w-full items-start justify-center text-lg font-medium text-gray-600 md:pt-16 xl:justify-between"
 >
 	<AdminSidebar />
 	<slot />
 </div>
 
-<!-- <style lang="postcss">
-	.body {
+<style lang="postcss">
+	/*.body {
 		@apply bg-white;
 	}
 	:global(.dark) .body {
 		@apply bg-gray-800;
-	}
-</style> -->
+	}*/
+</style>

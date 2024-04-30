@@ -24,12 +24,14 @@ declare global {
 		_id: string;
 		title: string;
 		description: string;
+		longDescription: string;
 		quantity: number;
 		price: number;
 		priceAfterDiscount: number;
 		colors: string[];
 		imageCover: string;
 		images: string[];
+		brand_id: string;
 		category_id: string;
 		subcategories_ids: string[];
 		ratingsQuantity: number;
@@ -42,14 +44,16 @@ declare global {
 		name: string;
 		description?: string;
 		imageCover: string;
+		slug: string;
 	}
 
 	interface ISubCategory {
 		_id: string;
 		name: string;
 		description?: string;
-		imageCover?: string;
+		imageCover: string;
 		category_id: string;
+		slug: string;
 	}
 
 	interface ICategory {

@@ -39,19 +39,19 @@
 			nested: [
 				{
 					name: 'Products',
-					route: '/admin/all-products'
+					route: '/admin/products'
 				},
 				{
 					name: 'Brands',
-					route: '/admin/all-brands'
+					route: '/admin/brands'
 				},
 				{
 					name: 'Categories',
-					route: '/admin/all-categories'
+					route: '/admin/categories'
 				},
 				{
 					name: 'Subcategories',
-					route: '/admin/all-subcategories'
+					route: '/admin/subcategories'
 				}
 			]
 		},

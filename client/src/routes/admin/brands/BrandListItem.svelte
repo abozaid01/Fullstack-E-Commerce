@@ -12,9 +12,7 @@
 		<div class="flex items-center text-sm">
 			<Avatar
 				class="mr-4"
-				src={item.imageCover
-					? `${PUBLIC_STATIC_BACKEND_URL}/BRANDS/${item.imageCover}`
-					: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png?20200912122019'}
+				src={item.imageCover ? `${PUBLIC_STATIC_BACKEND_URL}/BRANDS/${item.imageCover}` : '/No_image_available.png'}
 				alt="Brand image"
 			/>
 			<div>
@@ -26,8 +24,7 @@
 	<TableBodyCell tdClass="px-4 py-3">
 		{#if item.description}
 			<p class="max-w-xs break-words">
-				<ReadMore textContent={item.description} maxWords={20} maxChars={40}
-				></ReadMore>
+				<ReadMore textContent={item.description} maxWords={20} maxChars={40}></ReadMore>
 			</p>
 		{:else}
 			N/A

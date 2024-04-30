@@ -1,6 +1,15 @@
 import { check, body, CustomValidator, param } from 'express-validator';
 import validatorMiddleware from '../middlewares/validation.middleware';
 import Category from '../models/category.model';
+import SubCategory from '../models/subCategory.model';
+
+const checkNameExist = async (name: string) => {
+  return SubCategory.findOne({ name }).then((subcategory) => {
+    if (subcategory) {
+      return Promise.reject(new Error(`subcategory ${name} alerady exist`));
+    }
+  });
+};
 
 // Custom validator function to check if the category_id exists in the Category collection
 const categoryExistsValidator: CustomValidator = async (value) => {
@@ -30,7 +39,8 @@ export const createSubCategoryValidator = [
     .isLength({ min: 2 })
     .withMessage('Too short Subcategory name')
     .isLength({ max: 32 })
-    .withMessage('Too long Subcategory name'),
+    .withMessage('Too long Subcategory name')
+    .custom(checkNameExist),
 
   check('category_id')
     .notEmpty()
@@ -52,7 +62,8 @@ export const updateSubCategoryValidator = [
     .isLength({ min: 2 })
     .withMessage('Too short Subcategory name')
     .isLength({ max: 32 })
-    .withMessage('Too long Subcategory name'),
+    .withMessage('Too long Subcategory name')
+    .custom(checkNameExist),
 
   check('category_id').optional().isMongoId().withMessage('Invalid Category id format').custom(categoryExistsValidator), // Using custom validator to check if category exists
 

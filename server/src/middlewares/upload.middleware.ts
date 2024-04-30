@@ -10,6 +10,8 @@ interface UploadedFiles {
   [keys: string]: Express.Multer.File[];
 }
 
+let FIELD_NAME: string;
+
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
@@ -71,7 +73,10 @@ async function rmOldImg(folderName: string, imgName: string) {
   Logger.info(`Old image removed: ${oldImgPath}`);
 }
 
-export const uploadSingleImg = (fieldName: string) => upload.single(fieldName);
+export const uploadSingleImg = (fieldName: string) => {
+  FIELD_NAME = fieldName;
+  return upload.single(fieldName);
+};
 
 export const resizeSingleImg = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   if (!req.file) return next();
@@ -86,12 +91,7 @@ export const resizeSingleImg = catchAsync(async (req: Request, res: Response, ne
   req.file.filename = `${folderName}_${Date.now().toString(36) + Math.random().toString(36).substring(2)}_${new Date().toISOString().slice(2, 19).replace('T', '_')}.jpeg`; // probability of collision (i.e., generating the same ID) depends on the method and the context in which it's used
 
   // Remove the old img when updating
-  if (req.method === 'PATCH' && req.body[req.file.fieldname] !== 'undefined') {
-    // Check if the old image's filename is provided in the request body
-    if (!req.body[req.file.fieldname]) {
-      return next(new AppError(`Please provide the filename of the old image in the request body to remove it first.`, 400));
-    }
-
+  if (req.method === 'PATCH' && req.body[FIELD_NAME] !== 'undefined') {
     try {
       await rmOldImg(folderName, req.body[req.file.fieldname]);
     } catch (error) {
@@ -123,14 +123,14 @@ export const uploadImgs = (arrayOfFields: { name: string; maxCount: number }[]) 
 
 async function saveImg(files: UploadedFiles, folderName: string, imgName: string) {
   await sharp(files.imageCover[0].buffer)
-    .resize(2000, 1333)
+    .resize(300, 300)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
     .toFile(`uploads/${folderName}/${imgName}`);
 }
 
 export const resizeImgs = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.files) return next();
+  if (!req.files || Object.keys(req.files).length === 0) return next();
 
   const files = req.files as UploadedFiles; // Type assertion
 
@@ -164,16 +164,14 @@ export const resizeImgs = catchAsync(async (req: Request, res: Response, next: N
   if (req.method === 'PATCH') {
     // 1) imageCover
     if (files.imageCover) {
-      // Check if the old imageCover is provided in the request body
-      if (!req.body.imageCover) {
-        return next(new AppError(`Please provide the imageCover of the old image in the request body to remove it first.`, 400));
-      }
-
-      try {
-        await rmOldImg(folderName, req.body.imageCover);
-      } catch (error) {
-        // Handle error if the old image is not found
-        return next(new AppError(`Old image not found. Please provide the correct image filename.`, 400));
+      // Remove the old image
+      if (req.body.imageCover !== 'undefined') {
+        try {
+          await rmOldImg(folderName, req.body.imageCover);
+        } catch (error) {
+          // Handle error if the old image is not found
+          return next(new AppError(`Old image not found. Please provide the correct image filename.`, 400));
+        }
       }
 
       req.body.imageCover = `${folderName}-${Date.now().toString(36) + Math.random().toString(36).substring(2)}-cover.jpeg`;
@@ -182,32 +180,28 @@ export const resizeImgs = catchAsync(async (req: Request, res: Response, next: N
 
     // 2) images
     if (files.images) {
-      // Check if the old images names is provided in the request body
-      if (!req.body.images) {
-        return next(new AppError(`Please provide the old images name in the request body to remove them first.`, 400));
-      }
-      if (!Array.isArray(req.body.images)) {
-        return next(new AppError(`old image names Must be an Array`, 400));
-      }
+      if (req.body.images) {
+        // make sure the req.body.images is array. even if single img uploaded
+        req.body.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
 
-      // Check if all img names are correct
-      try {
-        await Promise.all(
-          req.body.images.map(async (img: string) => {
-            try {
-              await fs.access(`uploads/${folderName}/${img}`);
-            } catch (error) {
-              throw new AppError(`img: ${img} not found`, 400);
-            }
-          }),
-        );
-      } catch (error) {
-        return next(error);
+        // Check if all img names are correct
+        try {
+          await Promise.all(
+            req.body.images.map(async (img: string) => {
+              try {
+                await fs.access(`uploads/${folderName}/${img}`);
+              } catch (error) {
+                throw new AppError(`img: ${img} not found`, 400);
+              }
+            }),
+          );
+        } catch (error) {
+          return next(error);
+        }
+
+        // Remove all the old imgs that need to be updated
+        req.body.images.forEach(async (img: string) => await fs.rm(`uploads/${folderName}/${img}`));
       }
-
-      // Remove all imgs that need to be updated
-      req.body.images.forEach(async (img: string) => await fs.rm(`uploads/${folderName}/${img}`));
-
       // save the new imgs
       req.body.images = [];
       await Promise.all(

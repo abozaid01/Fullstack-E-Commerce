@@ -48,7 +48,7 @@ const productSchema = new Schema<IProduct>(
     category_id: {
       type: Schema.ObjectId,
       ref: 'Category',
-      required: [true, 'Product must be belong to category'],
+      // required: [true, 'Product must be belong to category'],
     },
     subcategories_ids: [
       {

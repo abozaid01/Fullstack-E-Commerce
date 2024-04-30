@@ -578,8 +578,7 @@
 		aria-label="Default breadcrumb example"
 		navClass="self-start mt-4"
 	>
-		<BreadcrumbItem href="/admin" home>Admin Home</BreadcrumbItem>
-		<BreadcrumbItem>Dashboard</BreadcrumbItem>
+		<BreadcrumbItem home>Dashboard</BreadcrumbItem>
 	</Breadcrumb>
 
 	<!-- Cards -->

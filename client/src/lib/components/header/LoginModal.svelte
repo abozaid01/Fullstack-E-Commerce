@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Button, Modal, Label, Input } from 'flowbite-svelte';
+	import { EyeOutline, EyeSlashOutline, EyeSlashSolid } from 'flowbite-svelte-icons';
 	import { login } from '$lib/services/auth.service';
 	import ValidateInput from '$lib/components/ValidateInput.svelte';
 	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
@@ -13,7 +14,19 @@
 	let password = 'test123';
 
 	let errStr = '';
-	let errObj: any = {};
+	let errObj: { email?: string; password?: string } = {};
+
+	let showPassword = false;
+	let passwordRef: HTMLInputElement;
+
+	const handleTogglePassword = () => {
+		showPassword = !showPassword;
+		if (showPassword) {
+			passwordRef.type = 'text';
+		} else {
+			passwordRef.type = 'password';
+		}
+	};
 
 	const handleLogin = async function () {
 		// 1) Reset the Errors if the form was submitted before
@@ -46,27 +59,15 @@
 	<ErrorAlert {errStr} />
 {/if}
 
-<Modal
-	bind:open={loginModal}
-	size="xs"
-	autoclose={false}
-	class="w-full"
-	outsideclose
->
+<Modal bind:open={loginModal} size="xs" autoclose={false} class="w-full" outsideclose>
 	<form class="flex flex-col space-y-5" on:submit|preventDefault={handleLogin}>
 		<div class="text-center">
-			<h4 class="text-xl font-medium text-gray-900 dark:text-white">
-				Welcome back!
-			</h4>
-			<h3 class="mb-2 text-2xl font-semibold text-gray-900 dark:text-white">
-				Sign in to your account
-			</h3>
+			<h4 class="text-xl font-medium text-gray-900 dark:text-white">Welcome back!</h4>
+			<h3 class="mb-2 text-2xl font-semibold text-gray-900 dark:text-white">Sign in to your account</h3>
 		</div>
 
 		<!-- SIGNUP MODAL-->
-		<div
-			class="text-center text-sm font-medium text-gray-500 dark:text-gray-300"
-		>
+		<div class="text-center text-sm font-medium text-gray-500 dark:text-gray-300">
 			Don't have an account? <button
 				on:click|preventDefault={handleSignupModal}
 				class="text-primary-700 dark:text-primary-500 hover:underline"
@@ -78,12 +79,7 @@
 		<!-- EMAIL -->
 		<Label class="space-y-2">
 			<span>Email</span>
-			<Input
-				type="text"
-				name="email"
-				placeholder="name@company.com"
-				bind:value={email}
-			/>
+			<Input type="text" name="email" placeholder="Enter your Email here" bind:value={email} />
 			{#if errObj?.email}
 				<ValidateInput inputError={errObj.email} />
 			{/if}
@@ -92,12 +88,29 @@
 		<!-- PASSWORD -->
 		<Label class="space-y-2">
 			<span>Your password</span>
-			<Input
-				type="password"
-				name="password"
-				placeholder="•••••"
-				bind:value={password}
-			/>
+			<div class="relative">
+				<input
+					type="password"
+					bind:value={password}
+					bind:this={passwordRef}
+					name="password"
+					placeholder="Enter your Password here"
+					class="focus:ring-primary-600 focus:border-primary-600 dark:focus:border-primary-500 dark:focus:ring-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+				/>
+
+				<button
+					type="button"
+					on:click={handleTogglePassword}
+					class="absolute end-0 top-1/2 -translate-y-1/2 rounded-e-md p-3.5"
+				>
+					{#if showPassword}
+						<EyeOutline color="#6B7280" size="sm" />
+					{:else}
+						<EyeSlashSolid color="#6B7280" size="sm" />
+					{/if}
+				</button>
+			</div>
+
 			{#if errObj?.password}
 				<ValidateInput inputError={errObj.password} />
 			{/if}
@@ -105,10 +118,7 @@
 
 		<!-- FORGET PASSWORD -->
 		<div class="text-center">
-			<a
-				href="#"
-				class="text-primary-700 dark:text-primary-500 ms-auto text-xs hover:underline"
-			>
+			<a href="#" class="text-primary-700 dark:text-primary-500 ms-auto text-xs hover:underline">
 				Forget your password?
 			</a>
 		</div>

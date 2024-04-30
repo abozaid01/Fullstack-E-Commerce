@@ -1,5 +1,14 @@
 import { check, body } from 'express-validator';
 import validatorMiddleware from '../middlewares/validation.middleware';
+import Category from '../models/category.model';
+
+const checkNameExist = async (name: string) => {
+  return Category.findOne({ name }).then((category) => {
+    if (category) {
+      return Promise.reject(new Error(`category ${name} alerady exist`));
+    }
+  });
+};
 
 export const getCategoryValidator = [check('id').isMongoId().withMessage('Invalid category id format'), validatorMiddleware];
 
@@ -12,7 +21,8 @@ export const createCategoryValidator = [
     .isLength({ min: 3 })
     .withMessage('Too short category name')
     .isLength({ max: 32 })
-    .withMessage('Too long category name'),
+    .withMessage('Too long category name')
+    .custom(checkNameExist),
 
   validatorMiddleware,
 ];
@@ -26,7 +36,8 @@ export const updateCategoryValidator = [
     .isLength({ min: 3 })
     .withMessage('Too short Category name')
     .isLength({ max: 32 })
-    .withMessage('Too long Category name'),
+    .withMessage('Too long Category name')
+    .custom(checkNameExist),
 
   validatorMiddleware,
 ];

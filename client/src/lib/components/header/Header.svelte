@@ -80,7 +80,7 @@
 					<DropdownItem>Profile</DropdownItem>
 					<DropdownItem>Orders</DropdownItem>
 					{#if $currentUser?.role === 'admin'}
-						<DropdownItem href="/admin">Dashboard</DropdownItem>
+						<DropdownItem href="/admin/dashboard">Dashboard</DropdownItem>
 					{/if}
 					<DropdownItem slot="footer" on:click={logout}>Sign out</DropdownItem>
 				</Dropdown>

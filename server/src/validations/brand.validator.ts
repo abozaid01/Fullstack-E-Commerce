@@ -1,5 +1,14 @@
 import { check, body } from 'express-validator';
 import validatorMiddleware from '../middlewares/validation.middleware';
+import Brand from '../models/brand.model';
+
+const checkNameExist = async (name: string) => {
+  return Brand.findOne({ name }).then((brand) => {
+    if (brand) {
+      return Promise.reject(new Error(`brand ${name} alerady exist`));
+    }
+  });
+};
 
 export const getBrandValidator = [check('id').isMongoId().withMessage('Invalid brand id format'), validatorMiddleware];
 
@@ -12,7 +21,8 @@ export const createBrandValidator = [
     .isLength({ min: 3 })
     .withMessage('Too short brand name')
     .isLength({ max: 32 })
-    .withMessage('Too long brand name'),
+    .withMessage('Too long brand name')
+    .custom(checkNameExist),
 
   validatorMiddleware,
 ];
@@ -26,7 +36,8 @@ export const updateBrandValidator = [
     .isLength({ min: 3 })
     .withMessage('Too short brand name')
     .isLength({ max: 32 })
-    .withMessage('Too long brand name'),
+    .withMessage('Too long brand name')
+    .custom(checkNameExist),
 
   validatorMiddleware,
 ];

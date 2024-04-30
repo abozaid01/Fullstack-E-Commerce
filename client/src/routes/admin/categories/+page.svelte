@@ -12,16 +12,17 @@
 	import {
 		PlusOutline,
 		ChevronRightOutline,
-		ChevronLeftOutline
+		ChevronLeftOutline,
+		GridSolid,
+		ListOutline
 	} from 'flowbite-svelte-icons';
 
-	import { GridSolid, ListOutline } from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 	import { Section } from 'flowbite-svelte-blocks';
 	import type { PageData } from './$types';
-	import BrandListItem from './BrandListItem.svelte';
-	import BrandGridItem from './BrandGridItem.svelte';
-	import AddBrandModal from './AddBrandModal.svelte';
+	import AddCategoryModal from './AddCategoryModal.svelte';
+	import CategoryListItem from './CategoryListItem.svelte';
+	import CategoryGridItem from './CategoryGridItem.svelte';
 
 	const divClass =
 		'bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-x-scroll scrollbar-none';
@@ -32,9 +33,9 @@
 		'text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2  pl-10';
 
 	export let data: PageData;
-	let paginationData = data.brands;
+	let paginationData = data.categories;
 
-	let addBrandModal: boolean;
+	let addCategoryModal: boolean;
 	let view = 'list';
 	let searchTerm = '';
 	let currentPosition = 0;
@@ -42,7 +43,7 @@
 	const showPage = 5;
 	let totalPages = 0;
 	let pagesToShow: number[] = [];
-	let totalItems = data.totalBrands;
+	let totalItems = data.totalCategories;
 	let startPage: number;
 	let endPage: number;
 
@@ -99,7 +100,7 @@
 	};
 </script>
 
-<AddBrandModal bind:addBrandModal />
+<AddCategoryModal bind:addCategoryModal />
 
 <div class="container flex flex-col gap-4">
 	<Section
@@ -107,8 +108,8 @@
 		classSection="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5"
 	>
 		<Breadcrumb aria-label="Default breadcrumb example" navClass="mb-4">
-			<BreadcrumbItem href="/admin" home>Admin Home</BreadcrumbItem>
-			<BreadcrumbItem>Brands</BreadcrumbItem>
+			<BreadcrumbItem href="/admin/dashboard" home>Dashboard</BreadcrumbItem>
+			<BreadcrumbItem>Categories</BreadcrumbItem>
 		</Breadcrumb>
 
 		<TableSearch
@@ -125,9 +126,9 @@
 				slot="header"
 				class="flex w-full flex-shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0"
 			>
-				<!-- ADD Brand Modal -->
-				<Button on:click={() => (addBrandModal = true)}>
-					<PlusOutline class="mr-2 h-3.5 w-3.5" />Add New Brand
+				<!-- ADD Category Modal -->
+				<Button on:click={() => (addCategoryModal = true)}>
+					<PlusOutline class="mr-2 h-3.5 w-3.5" />Add New Category
 				</Button>
 
 				<Button class="p-2" on:click={toggleView}>
@@ -154,12 +155,12 @@
 					{#if searchTerm !== ''}
 						<!-- SEARCHED TABLE LIST BODY -->
 						{#each filteredItems as item (item._id)}
-							<BrandListItem {item} />
+							<CategoryListItem {item} />
 						{/each}
 					{:else}
 						<!-- FULL TABLE List BODY -->
 						{#each currentPageItems as item (item._id)}
-							<BrandListItem {item} />
+							<CategoryListItem {item} />
 						{/each}
 					{/if}
 				</TableBody>
@@ -169,12 +170,12 @@
 					{#if searchTerm !== ''}
 						<!-- SEARCHED GRID ITEMS -->
 						{#each filteredItems as item (item._id)}
-							<BrandGridItem {item} />
+							<CategoryGridItem {item} />
 						{/each}
 					{:else}
 						<!-- FULL GRID ITEMS -->
 						{#each currentPageItems as item (item._id)}
-							<BrandGridItem {item} />
+							<CategoryGridItem {item} />
 						{/each}
 					{/if}
 				</div>

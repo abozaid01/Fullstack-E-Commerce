@@ -35,7 +35,7 @@ class APIFeatures<T> {
     if (this.reqQuery.sort) {
       const sortBy: string = (this.reqQuery.sort as string).split(',').join(' ');
       this.query.sort(sortBy);
-    } else this.query.sort('-createdAt');
+    } else this.query.sort('-updatedAt -createdAt');
     return this;
   }
 

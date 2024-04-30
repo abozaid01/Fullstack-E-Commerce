@@ -6,17 +6,18 @@
 	export let hideCartDrawer: boolean;
 
 	let transitionParams = {
-		x: -320,
+		x: 320,
 		duration: 200,
 		easing: sineIn
 	};
 </script>
 
 <Drawer
+	placement="right"
 	transitionType="fly"
 	{transitionParams}
 	bind:hidden={hideCartDrawer}
-	width="w-1/3"
+	width="w-[26rem]"
 >
 	<section>
 		<!-- 1) HEADING -->
@@ -29,10 +30,10 @@
 			{#each [1, 2, 3] as x}
 				<!-- CART ITEM -->
 				<div
-					class="flex flex-row-reverse items-center justify-end rounded-lg border border-gray-200 p-2 shadow-sm"
+					class="flex items-center justify-between rounded-lg border border-gray-200 p-2 shadow-sm"
 				>
 					<!-- IMG -->
-					<a href="#" class="shrink-0 md:order-1">
+					<a href="#">
 						<img
 							src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg"
 							alt="imac product"
@@ -109,7 +110,7 @@
 						<div class="flex gap-4">
 							<button
 								type="button"
-								class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
+								class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
 							>
 								<svg
 									class="me-1.5 h-5 w-5"

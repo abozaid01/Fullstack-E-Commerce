@@ -10,6 +10,7 @@ const categorySchema = new Schema<ICategory>(
       trim: true,
       minlength: [3, 'Too short Category title'],
       maxlength: [32, 'Too long Category title'],
+      unique: true,
     },
     description: {
       type: String,
